@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { router } from 'expo-router';
-import { supabase } from '../../services/supabase/config';
 import type { LoginCredentials } from '../../types/auth';
 import { WhatsAppLogo } from './WhatsAppLogo';
 import { AnimatedInput } from './AnimatedInput';
@@ -44,16 +43,14 @@ export const LoginScreen = () => {
     
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: credentials.email,
-        password: credentials.password,
-      });
-
-      if (error) throw error;
+      // Simular um pequeno delay para mostrar o loading
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Navegar direto para a lista de chats
+      router.replace('/(app)/chats/');
     } catch (err: any) {
       setErrors({
-        password: 'Email ou senha incorretos',
+        password: 'Erro ao fazer login. Tente novamente.',
       });
     } finally {
       setLoading(false);

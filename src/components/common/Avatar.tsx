@@ -1,62 +1,58 @@
-import { View, StyleSheet, Pressable, Image, ImageSourcePropType } from 'react-native';
+import React from 'react';
+import { View, Image, StyleSheet, TouchableOpacity, ImageSourcePropType } from 'react-native';
 
 interface AvatarProps {
-  size?: number;
+  size: number;
   source: ImageSourcePropType;
   online?: boolean;
   onPress?: () => void;
 }
 
-export function Avatar({
-  size = 40,
-  source,
-  online,
-  onPress,
-}: AvatarProps) {
-  return (
-    <Pressable
-      style={[
-        styles.container,
-        { width: size, height: size },
-      ]}
-      onPress={onPress}
-    >
-      <Image
-        source={source}
-        style={[
-          styles.image,
-          { width: size, height: size, borderRadius: size / 2 },
-        ]}
-      />
-      {online && (
-        <View
-          style={[
-            styles.onlineIndicator,
-            {
-              width: size * 0.25,
-              height: size * 0.25,
-              borderRadius: (size * 0.25) / 2,
-              right: 0,
-              bottom: 0,
-            },
-          ]}
-        />
-      )}
-    </Pressable>
+export const Avatar = ({ size, source, online, onPress }: AvatarProps) => {
+  const containerStyle = {
+    width: size,
+    height: size,
+    borderRadius: size / 2,
+  };
+
+  const onlineIndicatorSize = size * 0.25;
+  const onlineIndicatorStyle = {
+    width: onlineIndicatorSize,
+    height: onlineIndicatorSize,
+    borderRadius: onlineIndicatorSize / 2,
+    borderWidth: onlineIndicatorSize * 0.15,
+  };
+
+  const content = (
+    <View style={[styles.container, containerStyle]}>
+      <Image source={source} style={[styles.image, containerStyle]} />
+      {online && <View style={[styles.onlineIndicator, onlineIndicatorStyle]} />}
+    </View>
   );
-}
+
+  if (onPress) {
+    return (
+      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        {content}
+      </TouchableOpacity>
+    );
+  }
+
+  return content;
+};
 
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
   },
   image: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#E1E1E1',
   },
   onlineIndicator: {
     position: 'absolute',
-    backgroundColor: '#25D366',
-    borderWidth: 2,
-    borderColor: '#fff',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#4CD964',
+    borderColor: '#FFFFFF',
   },
 }); 
