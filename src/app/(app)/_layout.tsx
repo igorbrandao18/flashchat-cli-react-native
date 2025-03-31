@@ -1,4 +1,4 @@
-import { Stack, usePathname } from 'expo-router';
+import { Stack, usePathname, router } from 'expo-router';
 import { Platform, StatusBar, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -57,10 +57,7 @@ interface TabButtonProps {
 
 const TabButton: React.FC<TabButtonProps> = ({ icon, label, active, onPress }) => (
   <TouchableOpacity
-    style={[
-      styles.tabButton,
-      active && styles.activeTabButton
-    ]}
+    style={styles.tabButton}
     onPress={onPress}
   >
     <MaterialCommunityIcons
@@ -81,7 +78,37 @@ export default function AppLayout() {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
 
-  const isActive = (route: string) => pathname?.startsWith(route) ?? false;
+  // Função para verificar qual tab está ativa
+  const getActiveTab = () => {
+    if (pathname?.includes('/chats')) return 'chats';
+    if (pathname?.includes('/camera')) return 'camera';
+    if (pathname?.includes('/status')) return 'status';
+    if (pathname?.includes('/calls')) return 'calls';
+    return 'chats'; // Default tab
+  };
+
+  const activeTab = getActiveTab();
+
+  // Função para navegar entre as tabs
+  const navigateToTab = (tab: string) => {
+    switch (tab) {
+      case 'chats':
+        router.push('/(app)/chats');
+        break;
+      case 'camera':
+        router.push('/(app)/camera');
+        break;
+      case 'status':
+        router.push('/(app)/status');
+        break;
+      case 'calls':
+        router.push('/(app)/calls');
+        break;
+    }
+  };
+
+  // Não mostrar o menu em algumas telas específicas
+  const shouldShowBottomNav = !pathname?.includes('/chats/');
 
   return (
     <Animated.View 
@@ -102,12 +129,9 @@ export default function AppLayout() {
           contentStyle: {
             backgroundColor: '#FFFFFF',
           },
-          // Configurações personalizadas do header quando necessário
           header: undefined,
           ...headerConfig,
-          // Animações personalizadas
           ...screenAnimations,
-          // Gestos de navegação
           gestureEnabled: true,
           gestureDirection: 'horizontal',
           fullScreenGestureEnabled: true,
@@ -139,35 +163,58 @@ export default function AppLayout() {
             gestureDirection: 'vertical',
           }}
         />
+
+        <Stack.Screen 
+          name="camera"
+          options={{
+            title: 'Câmera',
+          }}
+        />
+
+        <Stack.Screen 
+          name="status"
+          options={{
+            title: 'Status',
+          }}
+        />
+
+        <Stack.Screen 
+          name="calls"
+          options={{
+            title: 'Chamadas',
+          }}
+        />
       </Stack>
 
       {/* Bottom Navigation */}
-      <View style={[styles.bottomNav, { paddingBottom: insets.bottom }]}>
-        <TabButton
-          icon="message-text-outline"
-          label="Conversas"
-          active={isActive('/(app)/chats')}
-          onPress={() => {}}
-        />
-        <TabButton
-          icon="camera-outline"
-          label="Câmera"
-          active={isActive('/(app)/camera')}
-          onPress={() => {}}
-        />
-        <TabButton
-          icon="image-multiple-outline"
-          label="Status"
-          active={isActive('/(app)/status')}
-          onPress={() => {}}
-        />
-        <TabButton
-          icon="phone-outline"
-          label="Chamadas"
-          active={isActive('/(app)/calls')}
-          onPress={() => {}}
-        />
-      </View>
+      {shouldShowBottomNav && (
+        <View style={[styles.bottomNav, { paddingBottom: insets.bottom }]}>
+          <TabButton
+            icon="message-text-outline"
+            label="Conversas"
+            active={activeTab === 'chats'}
+            onPress={() => navigateToTab('chats')}
+          />
+          <TabButton
+            icon="camera-outline"
+            label="Câmera"
+            active={activeTab === 'camera'}
+            onPress={() => navigateToTab('camera')}
+          />
+          <TabButton
+            icon="image-multiple-outline"
+            label="Status"
+            active={activeTab === 'status'}
+            onPress={() => navigateToTab('status')}
+          />
+          <TabButton
+            icon="phone-outline"
+            label="Chamadas"
+            active={activeTab === 'calls'}
+            onPress={() => navigateToTab('calls')}
+          />
+        </View>
+      )}
     </Animated.View>
   );
 }
@@ -190,11 +237,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     paddingHorizontal: 16,
-  },
-  activeTabButton: {
-    borderTopWidth: 2,
-    borderTopColor: '#075E54',
-    marginTop: -2,
   },
   tabLabel: {
     marginTop: 4,
