@@ -171,6 +171,11 @@ export default function ChatsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [chats, setChats] = useState<Chat[]>(mockChats);
 
+  const handleNewChat = () => {
+    // TODO: Implement new chat functionality
+    console.log('New chat pressed');
+  };
+
   const filteredChats = chats.filter(chat =>
     chat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -182,7 +187,12 @@ export default function ChatsScreen() {
           title="FlashChat"
           titleStyle={styles.headerTitle}
         />
-        <Appbar.Action icon="dots-vertical" color="#fff" onPress={() => {}} />
+        <Appbar.Action 
+          icon="message-plus-outline" 
+          color="#fff" 
+          onPress={handleNewChat}
+          style={styles.headerButton}
+        />
       </Appbar.Header>
 
       <View style={{ padding: 8, backgroundColor: theme.colors.primary }}>
@@ -213,7 +223,7 @@ export default function ChatsScreen() {
         icon="message-plus"
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         color="#fff"
-        onPress={() => {}}
+        onPress={handleNewChat}
       />
     </View>
   );
@@ -331,5 +341,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     fontWeight: '500',
+  },
+  headerButton: {
+    marginRight: 4,
   },
 }); 
