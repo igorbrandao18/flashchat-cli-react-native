@@ -166,9 +166,21 @@ const SwipeableChatItem: React.FC<ChatItemProps> = ({ chat, onPress }) => {
   );
 };
 
+const EmptyChats = () => (
+  <View style={styles.emptyContainer}>
+    <View style={styles.emptyIconContainer}>
+      <MaterialCommunityIcons name="check-circle-outline" size={80} color="#00A884" />
+    </View>
+    <Text style={styles.emptyTitle}>You haven't chat yet</Text>
+    <TouchableOpacity style={styles.startButton}>
+      <Text style={styles.startButtonText}>Start Chatting</Text>
+    </TouchableOpacity>
+  </View>
+);
+
 export default function ChatsScreen() {
   const theme = useTheme();
-  const [chats, setChats] = useState<Chat[]>(mockChats);
+  const [chats, setChats] = useState<Chat[]>([]);  // Iniciando vazio para testar
 
   const handleNewChat = () => {
     // TODO: Implement new chat functionality
@@ -191,16 +203,20 @@ export default function ChatsScreen() {
       </Appbar.Header>
 
       <View style={styles.listContainer}>
-        <FlashList
-          data={chats}
-          renderItem={({ item }) => (
-            <SwipeableChatItem
-              chat={item}
-              onPress={() => router.push(`/chats/${item.id}`)}
-            />
-          )}
-          estimatedItemSize={76}
-        />
+        {chats.length > 0 ? (
+          <FlashList
+            data={chats}
+            renderItem={({ item }) => (
+              <SwipeableChatItem
+                chat={item}
+                onPress={() => router.push(`/chats/${item.id}`)}
+              />
+            )}
+            estimatedItemSize={76}
+          />
+        ) : (
+          <EmptyChats />
+        )}
       </View>
 
       <FAB
@@ -326,5 +342,38 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     marginRight: 4,
+  },
+  emptyContainer: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  emptyIconContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#00A88410',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    color: '#fff',
+    marginBottom: 32,
+    fontWeight: '300',
+  },
+  startButton: {
+    backgroundColor: '#00A884',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 24,
+  },
+  startButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
   },
 }); 
