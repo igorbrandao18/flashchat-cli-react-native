@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   View, 
   StyleSheet, 
@@ -21,7 +21,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Swipeable, GestureHandlerRootView, RectButton } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Appbar, FAB, Searchbar, useTheme } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
@@ -119,107 +119,49 @@ const mockChats: ChatItemProps['chat'][] = [
   },
 ];
 
-const ChatItem: React.FC<ChatItemProps> = ({ chat, onPress }) => {
-  const scale = useSharedValue(1);
+const SwipeableChatItem: React.FC<ChatItemProps> = ({ chat, onPress }) => {
+  const swipeableRef = useRef<Swipeable>(null);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
+  const handleArchive = () => {
+    swipeableRef.current?.close();
+    // TODO: Implement archive functionality
+    console.log('Archive chat:', chat.id);
+  };
+
+  const handleMore = () => {
+    swipeableRef.current?.close();
+    // TODO: Implement more options menu
+    console.log('More options for chat:', chat.id);
+  };
 
   const renderRightActions = () => (
     <View style={styles.swipeActions}>
-      <TouchableOpacity style={[styles.swipeAction, { backgroundColor: '#4CD964' }]}>
-        <MaterialCommunityIcons name="pin" size={24} color="#FFF" />
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.swipeAction, { backgroundColor: '#007AFF' }]}>
-        <MaterialCommunityIcons name="archive" size={24} color="#FFF" />
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.swipeAction, { backgroundColor: '#FF3B30' }]}>
-        <MaterialCommunityIcons name="delete" size={24} color="#FFF" />
-      </TouchableOpacity>
+      <RectButton 
+        style={[styles.swipeAction, { backgroundColor: '#00A884' }]}
+        onPress={handleArchive}
+      >
+        <MaterialCommunityIcons name="archive-outline" size={22} color="#FFF" />
+        <Text style={styles.swipeActionText}>Archive</Text>
+      </RectButton>
+      <RectButton 
+        style={[styles.swipeAction, { backgroundColor: '#8E8E93' }]}
+        onPress={handleMore}
+      >
+        <MaterialCommunityIcons name="dots-vertical" size={22} color="#FFF" />
+        <Text style={styles.swipeActionText}>More</Text>
+      </RectButton>
     </View>
   );
 
   return (
-    <Swipeable renderRightActions={renderRightActions}>
-      <AnimatedTouchable
-        style={[styles.chatItem, animatedStyle]}
-        onPress={onPress}
-        onPressIn={() => {
-          scale.value = withSpring(0.98);
-        }}
-        onPressOut={() => {
-          scale.value = withSpring(1);
-        }}
-      >
-        <View style={styles.avatarContainer}>
-          <Avatar
-            size={50}
-            source={{ uri: chat.avatar }}
-            online={chat.online}
-          />
-          {chat.isGroup && (
-            <View style={styles.groupIndicator}>
-              <MaterialCommunityIcons name="account-group" size={12} color="#FFF" />
-            </View>
-          )}
-        </View>
-
-        <View style={styles.chatInfo}>
-          <View style={styles.chatHeader}>
-            <View style={styles.nameContainer}>
-              <Text style={styles.chatName} numberOfLines={1}>
-                {chat.name}
-              </Text>
-              {chat.pinned && (
-                <MaterialCommunityIcons name="pin" size={16} color="#8E8E93" />
-              )}
-              {chat.muted && (
-                <MaterialCommunityIcons name="bell-off" size={16} color="#8E8E93" />
-              )}
-            </View>
-            <Text style={styles.chatTime}>{formatMessageTime(chat.lastMessage.timestamp)}</Text>
-          </View>
-
-          <View style={styles.chatFooter}>
-            <View style={styles.messageContainer}>
-              {chat.typing ? (
-                <Text style={styles.typingText}>digitando...</Text>
-              ) : (
-                <>
-                  {chat.isVoiceMessage && (
-                    <MaterialCommunityIcons name="microphone" size={16} color="#8E8E93" style={styles.messageIcon} />
-                  )}
-                  {chat.isPhoto && (
-                    <MaterialCommunityIcons name="camera" size={16} color="#8E8E93" style={styles.messageIcon} />
-                  )}
-                  <Text 
-                    style={[
-                      styles.lastMessage,
-                      chat.unreadCount > 0 && styles.unreadMessage
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {chat.lastMessage.text}
-                    {chat.isVoiceMessage && ` • ${chat.voiceDuration}`}
-                    {chat.isPhoto && ' • Foto'}
-                  </Text>
-                </>
-              )}
-            </View>
-            {chat.unreadCount > 0 && (
-              <View style={[
-                styles.unreadBadge,
-                chat.muted && styles.mutedBadge
-              ]}>
-                <Text style={styles.unreadCount}>
-                  {chat.unreadCount > 99 ? '99+' : chat.unreadCount}
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
-      </AnimatedTouchable>
+    <Swipeable 
+      ref={swipeableRef}
+      renderRightActions={renderRightActions}
+      friction={2}
+      rightThreshold={40}
+      overshootRight={false}
+    >
+      <ChatListItem chat={chat} onPress={onPress} />
     </Swipeable>
   );
 };
@@ -258,7 +200,7 @@ export default function ChatsScreen() {
         <FlashList
           data={filteredChats}
           renderItem={({ item }) => (
-            <ChatListItem
+            <SwipeableChatItem
               chat={item}
               onPress={() => router.push(`/chats/${item.id}`)}
             />
@@ -374,8 +316,20 @@ const styles = StyleSheet.create({
   swipeActions: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    height: '100%',
   },
   swipeAction: {
-    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 75,
+    height: '100%',
+    paddingHorizontal: 8,
+  },
+  swipeActionText: {
+    color: '#FFF',
+    fontSize: 12,
+    marginTop: 4,
+    fontWeight: '500',
   },
 }); 
