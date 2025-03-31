@@ -137,7 +137,7 @@ const SwipeableChatItem: React.FC<ChatItemProps> = ({ chat, onPress }) => {
   const renderRightActions = () => (
     <View style={styles.swipeActions}>
       <RectButton 
-        style={[styles.swipeAction, { backgroundColor: '#00A884' }]}
+        style={[styles.swipeAction, { backgroundColor: '#128C7E' }]}
         onPress={handleArchive}
       >
         <MaterialCommunityIcons name="archive-outline" size={22} color="#FFF" />
@@ -221,7 +221,7 @@ export default function ChatsScreen() {
 
       <FAB
         icon="message-plus"
-        style={[styles.fab, { backgroundColor: theme.colors.primary }]}
+        style={styles.fab}
         color="#fff"
         onPress={handleNewChat}
       />
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    backgroundColor: '#00A884',
+    backgroundColor: '#128C7E',
     elevation: 0,
   },
   headerTitle: {
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: '#00A884',
+    backgroundColor: '#128C7E',
   },
   searchBar: {
     elevation: 0,
@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     bottom: 16,
+    backgroundColor: '#128C7E',
   },
   chatItem: {
     flexDirection: 'row',
