@@ -137,7 +137,7 @@ const SwipeableChatItem: React.FC<ChatItemProps> = ({ chat, onPress }) => {
   const renderRightActions = () => (
     <View style={styles.swipeActions}>
       <RectButton 
-        style={[styles.swipeAction, { backgroundColor: '#128C7E' }]}
+        style={[styles.swipeAction, { backgroundColor: '#008069' }]}
         onPress={handleArchive}
       >
         <MaterialCommunityIcons name="archive-outline" size={22} color="#FFF" />
@@ -168,17 +168,12 @@ const SwipeableChatItem: React.FC<ChatItemProps> = ({ chat, onPress }) => {
 
 export default function ChatsScreen() {
   const theme = useTheme();
-  const [searchQuery, setSearchQuery] = useState('');
   const [chats, setChats] = useState<Chat[]>(mockChats);
 
   const handleNewChat = () => {
     // TODO: Implement new chat functionality
     console.log('New chat pressed');
   };
-
-  const filteredChats = chats.filter(chat =>
-    chat.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <View style={styles.container}>
@@ -195,20 +190,9 @@ export default function ChatsScreen() {
         />
       </Appbar.Header>
 
-      <View style={styles.searchContainer}>
-        <Searchbar
-          placeholder="Pesquisar"
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          style={styles.searchBar}
-          inputStyle={styles.searchInput}
-          iconColor={theme.colors.primary}
-        />
-      </View>
-
       <View style={styles.listContainer}>
         <FlashList
-          data={filteredChats}
+          data={chats}
           renderItem={({ item }) => (
             <SwipeableChatItem
               chat={item}
@@ -235,31 +219,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    backgroundColor: '#128C7E',
+    backgroundColor: '#008069',
     elevation: 0,
   },
   headerTitle: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  searchContainer: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    backgroundColor: '#128C7E',
-  },
-  searchBar: {
-    elevation: 0,
-    borderRadius: 8,
-    height: 36,
-    backgroundColor: '#fff',
-  },
-  searchInput: {
-    fontSize: 15,
-    height: 36,
-    paddingTop: 0,
-    paddingBottom: 0,
-    marginLeft: -4,
   },
   listContainer: {
     flex: 1,
@@ -268,7 +234,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     bottom: 16,
-    backgroundColor: '#128C7E',
+    backgroundColor: '#008069',
   },
   chatItem: {
     flexDirection: 'row',
