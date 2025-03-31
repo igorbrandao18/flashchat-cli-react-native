@@ -63,7 +63,8 @@ const TabButton: React.FC<TabButtonProps> = ({ icon, label, active, onPress }) =
     <MaterialCommunityIcons
       name={icon}
       size={24}
-      color={active ? '#075E54' : '#8E8E93'}
+      color={active ? '#007AFF' : '#8E8E93'}
+      style={styles.tabIcon}
     />
     <Text style={[
       styles.tabLabel,
@@ -78,36 +79,37 @@ export default function AppLayout() {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
 
-  // Função para verificar qual tab está ativa
   const getActiveTab = () => {
-    if (pathname?.includes('/chats')) return 'chats';
-    if (pathname?.includes('/camera')) return 'camera';
     if (pathname?.includes('/status')) return 'status';
     if (pathname?.includes('/calls')) return 'calls';
-    return 'chats'; // Default tab
+    if (pathname?.includes('/camera')) return 'camera';
+    if (pathname?.includes('/chats')) return 'chats';
+    if (pathname?.includes('/settings')) return 'settings';
+    return 'chats';
   };
 
   const activeTab = getActiveTab();
 
-  // Função para navegar entre as tabs
   const navigateToTab = (tab: string) => {
     switch (tab) {
-      case 'chats':
-        router.push('/(app)/chats');
-        break;
-      case 'camera':
-        router.push('/(app)/camera');
-        break;
       case 'status':
         router.push('/(app)/status');
         break;
       case 'calls':
         router.push('/(app)/calls');
         break;
+      case 'camera':
+        router.push('/(app)/camera');
+        break;
+      case 'chats':
+        router.push('/(app)/chats');
+        break;
+      case 'settings':
+        router.push('/(app)/settings');
+        break;
     }
   };
 
-  // Não mostrar o menu em algumas telas específicas
   const shouldShowBottomNav = !pathname?.includes('/chats/');
 
   return (
@@ -137,12 +139,11 @@ export default function AppLayout() {
           fullScreenGestureEnabled: true,
         }}
       >
-        <Stack.Screen 
-          name="chats" 
-          options={{
-            title: 'Conversas',
-          }}
-        />
+        <Stack.Screen name="status" options={{ title: 'Status' }} />
+        <Stack.Screen name="calls" options={{ title: 'Calls' }} />
+        <Stack.Screen name="camera" options={{ title: 'Camera' }} />
+        <Stack.Screen name="chats" options={{ title: 'Chats' }} />
+        <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         
         <Stack.Screen 
           name="chats/[id]"
@@ -163,55 +164,39 @@ export default function AppLayout() {
             gestureDirection: 'vertical',
           }}
         />
-
-        <Stack.Screen 
-          name="camera"
-          options={{
-            title: 'Câmera',
-          }}
-        />
-
-        <Stack.Screen 
-          name="status"
-          options={{
-            title: 'Status',
-          }}
-        />
-
-        <Stack.Screen 
-          name="calls"
-          options={{
-            title: 'Chamadas',
-          }}
-        />
       </Stack>
 
-      {/* Bottom Navigation */}
       {shouldShowBottomNav && (
         <View style={[styles.bottomNav, { paddingBottom: insets.bottom }]}>
           <TabButton
-            icon="message-text-outline"
-            label="Conversas"
-            active={activeTab === 'chats'}
-            onPress={() => navigateToTab('chats')}
-          />
-          <TabButton
-            icon="camera-outline"
-            label="Câmera"
-            active={activeTab === 'camera'}
-            onPress={() => navigateToTab('camera')}
-          />
-          <TabButton
-            icon="image-multiple-outline"
+            icon="clock-outline"
             label="Status"
             active={activeTab === 'status'}
             onPress={() => navigateToTab('status')}
           />
           <TabButton
             icon="phone-outline"
-            label="Chamadas"
+            label="Calls"
             active={activeTab === 'calls'}
             onPress={() => navigateToTab('calls')}
+          />
+          <TabButton
+            icon="camera-outline"
+            label="Camera"
+            active={activeTab === 'camera'}
+            onPress={() => navigateToTab('camera')}
+          />
+          <TabButton
+            icon="message-text-outline"
+            label="Chats"
+            active={activeTab === 'chats'}
+            onPress={() => navigateToTab('chats')}
+          />
+          <TabButton
+            icon="cog-outline"
+            label="Settings"
+            active={activeTab === 'settings'}
+            onPress={() => navigateToTab('settings')}
           />
         </View>
       )}
@@ -225,7 +210,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
+    borderTopWidth: 0.5,
     borderTopColor: '#E5E5EA',
     paddingTop: 8,
     position: 'absolute',
@@ -236,14 +221,17 @@ const styles = StyleSheet.create({
   tabButton: {
     alignItems: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
+    flex: 1,
+  },
+  tabIcon: {
+    marginBottom: 4,
   },
   tabLabel: {
-    marginTop: 4,
-    fontSize: 12,
+    fontSize: 10,
     color: '#8E8E93',
   },
   activeTabLabel: {
-    color: '#075E54',
+    color: '#007AFF',
   },
 }); 
