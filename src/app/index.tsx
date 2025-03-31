@@ -51,7 +51,7 @@ export default function SplashScreen() {
         style={[styles.logoContainer, logoStyle]}
       >
         <Image
-          source={require('../assets/images/whatsapp.png')}
+          source={require('../assets/images/whatsapp-logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
