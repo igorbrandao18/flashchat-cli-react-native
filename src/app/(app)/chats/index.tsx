@@ -195,7 +195,7 @@ export default function ChatsScreen() {
         />
       </Appbar.Header>
 
-      <View style={{ padding: 8, backgroundColor: theme.colors.primary }}>
+      <View style={styles.searchContainer}>
         <Searchbar
           placeholder="Pesquisar"
           onChangeText={setSearchQuery}
@@ -239,12 +239,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  searchContainer: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#00A884',
+  },
   searchBar: {
     elevation: 0,
     borderRadius: 8,
+    height: 36,
   },
   searchInput: {
-    fontSize: 16,
+    fontSize: 15,
+    height: 36,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   listContainer: {
     flex: 1,
