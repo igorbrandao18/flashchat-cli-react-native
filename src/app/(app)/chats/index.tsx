@@ -182,7 +182,7 @@ export default function ChatsScreen() {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header style={{ backgroundColor: theme.colors.primary }}>
+      <Appbar.Header style={styles.header}>
         <Appbar.Content
           title="FlashChat"
           titleStyle={styles.headerTitle}
@@ -234,6 +234,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  header: {
+    backgroundColor: '#00A884',
+    elevation: 0,
+  },
   headerTitle: {
     color: '#fff',
     fontSize: 20,
@@ -241,19 +245,21 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 8,
     backgroundColor: '#00A884',
   },
   searchBar: {
     elevation: 0,
     borderRadius: 8,
     height: 36,
+    backgroundColor: '#fff',
   },
   searchInput: {
     fontSize: 15,
     height: 36,
     paddingTop: 0,
     paddingBottom: 0,
+    marginLeft: -4,
   },
   listContainer: {
     flex: 1,
